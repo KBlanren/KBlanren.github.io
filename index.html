@@ -27,11 +27,13 @@
         <a href="#hero" class="nav-brand">LANREN.COM</a>
         <div class="nav-links" id="navLinks">
             <a href="#content" class="nav-link" data-path="home">HOME</a>
+            <a href="#content" class="nav-link" data-path="blog">BLOG</a>
             <div class="nav-dropdown">
-                <span class="nav-link dropdown-trigger">BLOG <span class="caret">▼</span></span>
-                <div class="dropdown-menu">
+                <span class="nav-link dropdown-trigger">HORROR <span class="caret">▼</span></span>
+                <div class="dropdown-menu" id="horrorDropdown">
                 </div>
             </div>
+            <a href="#content" class="nav-link" data-path="contributors">CONTRIBUTORS</a>
         </div>
         <button class="mobile-toggle" id="mobileToggle">≡</button>
     </nav>
@@ -40,8 +42,12 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="#content" class="mobile-link" data-path="home">HOME</a>
         <div class="mobile-divider"></div>
-        <div class="mobile-dropdown-title">BLOG</div>
-        <a href="#content" class="mobile-dropdown-item" data-path="blog/2026陆家嘴论坛总结">陆家嘴论坛总结</a>
+        <a href="#content" class="mobile-link" data-path="blog">BLOG</a>
+        <div class="mobile-divider"></div>
+        <div class="mobile-dropdown-title">HORROR</div>
+        <div id="mobileHorrorDropdown"></div>
+        <div class="mobile-divider"></div>
+        <a href="#content" class="mobile-link" data-path="contributors">CONTRIBUTORS</a>
     </div>
     <div class="overlay" id="overlay"></div>
 

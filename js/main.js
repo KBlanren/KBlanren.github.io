@@ -9,14 +9,15 @@ const heroTitle = document.getElementById('heroTitle');
 
 const PATH_META = {
     'home': { category: 'Home', date: '2025' },
-    'blog/2026陆家嘴论坛总结': { category: 'Blog', date: '2025' }
+    'blog': { category: 'Blog', date: '2025' },
+    'contributors': { category: 'Contributors', date: '2025' }
 };
 
 const HOME_HTML = `
 <div class="home-intro">
     <div class="home-text">
         <h1>Welcome to LANREN.COM</h1>
-        <p>这是我的个人网站，我会在这里更新学习笔记、博客、和恐怖小说。</p>
+        <p>这是我和我朋友们的唐网站，我们会在这里更新学习笔记、博客、和恐怖小说。</p>
         <p>欢迎随便逛逛，内容不定期更新。</p>
     </div>
     <div class="pixel-guy-wrap">
@@ -36,7 +37,92 @@ const NOT_FOUND_HTML = `
 </div>
 `;
 
-// 更新头部信息
+// 全局 manifest 缓存
+let contentManifest = null;
+
+// 加载 manifest.json
+async function loadManifest() {
+    try {
+        const resp = await fetch('content/manifest.json');
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        contentManifest = await resp.json();
+    } catch (err) {
+        console.error('Manifest load failed:', err);
+        contentManifest = {};
+    }
+}
+
+// 根据 manifest 动态渲染 HORROR 下拉菜单（桌面端 + 移动端）
+function renderDropdowns() {
+    if (!contentManifest) return;
+
+    // 桌面端 HORROR
+    const horrorDesktop = document.getElementById('horrorDropdown');
+    if (horrorDesktop && contentManifest.horror) {
+        horrorDesktop.innerHTML = contentManifest.horror.map(item =>
+            `<a href="#content" class="dropdown-item" data-path="${item.path}">${item.title}</a>`
+        ).join('');
+    }
+
+    // 移动端 HORROR
+    const horrorMobile = document.getElementById('mobileHorrorDropdown');
+    if (horrorMobile && contentManifest.horror) {
+        horrorMobile.innerHTML = contentManifest.horror.map(item =>
+            `<a href="#content" class="mobile-dropdown-item" data-path="${item.path}">${item.title}</a>`
+        ).join('');
+    }
+
+    // 重新绑定新生成的导航项点击事件
+    document.querySelectorAll('.dropdown-item[data-path], .mobile-dropdown-item[data-path]').forEach(link => {
+        link.removeEventListener('click', handleNavClick); // 防止重复绑定
+        link.addEventListener('click', handleNavClick);
+    });
+}
+
+// 渲染某个分类的文章列表（用于 BLOG 等非下拉分类）
+function renderCategoryList(category) {
+    const items = contentManifest[category] || [];
+    if (items.length === 0) {
+        contentArea.innerHTML = `
+            <div class="error-box">
+                <h2>⚠ 暂无内容</h2>
+                <p>该分类下还没有文章。</p>
+                <p style="margin-top: 12px; font-size: 0.9rem;">新建文件：content/${category}/xxx.md</p>
+            </div>
+        `;
+        return;
+    }
+
+    const listHtml = items.map(item => `
+        <a href="#${item.path}" class="category-list-item" data-path="${item.path}">
+            <span class="category-list-title">${item.title}</span>
+            <span class="category-list-arrow">→</span>
+        </a>
+    `).join('');
+
+    contentArea.innerHTML = `
+        <div class="category-list">
+            <h1>${category.toUpperCase()}</h1>
+            <div class="category-list-items">${listHtml}</div>
+        </div>
+    `;
+
+    // 绑定列表项点击事件
+    document.querySelectorAll('.category-list-item').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const path = link.dataset.path;
+            if (path) {
+                window.location.hash = path;
+                closeMobileMenu();
+            }
+        });
+    });
+
+    if (window.MathJax) {
+        MathJax.typesetPromise([contentArea]).catch(() => {});
+    }
+}
 function updateHeader(path) {
     const meta = PATH_META[path] || { category: 'Archive', date: '2025' };
     if (docCategory) docCategory.textContent = meta.category;
@@ -111,6 +197,46 @@ function loadHome() {
     }
 }
 
+// 团队成员数据（照片放在 images/ 文件夹下，按人名命名如：蓝人王.jpg、FIN.jpg）
+const CONTRIBUTORS = [
+    {
+        name: '蓝人王',
+        role: 'Founder & Chief Editor',
+        photo: 'images/蓝人王.png'
+    },
+    {
+        name: 'FIN',
+        role: 'Co-Founder & Horror Writer',
+        photo: 'images/FIN.png'
+    }
+];
+
+// 渲染贡献页
+function renderContributors() {
+    updateHeader('contributors');
+
+    const membersHtml = CONTRIBUTORS.map(person => `
+        <div class="contributor-card">
+            <div class="contributor-avatar-wrap">
+                <img src="${person.photo}" alt="${person.name}" class="contributor-avatar" onerror="this.style.display='none';this.parentElement.innerHTML+='<div class=\\'contributor-avatar-placeholder\\'>?</div>'">
+            </div>
+            <div class="contributor-role">${person.role}</div>
+            <div class="contributor-name">▶ ${person.name}</div>
+        </div>
+    `).join('');
+
+    contentArea.innerHTML = `
+        <div class="contributors-page">
+            <h1 class="contributors-title">Our Team</h1>
+            <div class="contributors-grid">${membersHtml}</div>
+        </div>
+    `;
+
+    if (window.MathJax) {
+        MathJax.typesetPromise([contentArea]).catch(() => {});
+    }
+}
+
 // 滚动到内容区
 function scrollToContent() {
     const mainContent = document.getElementById('main-content');
@@ -131,6 +257,12 @@ function handleRoute(path) {
     // 加载内容
     if (path === 'home' || !path) {
         loadHome();
+    } else if (path === 'blog') {
+        // BLOG 现在显示分类列表
+        updateHeader('blog');
+        renderCategoryList('blog');
+    } else if (path === 'contributors') {
+        renderContributors();
     } else {
         loadMarkdown(path);
     }
@@ -205,7 +337,11 @@ mobileToggle.addEventListener('click', () => {
 overlay.addEventListener('click', closeMobileMenu);
 
 // 初始化绑定
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 先加载 manifest，再渲染下拉菜单和初始路由
+    await loadManifest();
+    renderDropdowns();
+
     // 绑定所有导航点击（包括下拉项和移动端项）
     document.querySelectorAll('.nav-link[data-path], .dropdown-item[data-path], .mobile-link[data-path], .mobile-dropdown-item[data-path]').forEach(link => {
         link.addEventListener('click', handleNavClick);
