@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LANREN.COM</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="top-nav" id="topNav">
+        <a href="#hero" class="nav-brand">LANREN.COM</a>
+        <div class="nav-links" id="navLinks">
+            <a href="#content" class="nav-link" data-path="home">HOME</a>
+            <div class="nav-dropdown">
+                <span class="nav-link dropdown-trigger">BLOG <span class="caret">▼</span></span>
+                <div class="dropdown-menu">
+                    <a href="#content" class="dropdown-item" data-path="blog/2026陆家嘴论坛总结">陆家嘴论坛总结</a>
+                </div>
+            </div>
+        </div>
+        <button class="mobile-toggle" id="mobileToggle">≡</button>
+    </nav>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#content" class="mobile-link" data-path="home">HOME</a>
+        <div class="mobile-divider"></div>
+        <div class="mobile-dropdown-title">BLOG</div>
+        <a href="#content" class="mobile-dropdown-item" data-path="blog/2026陆家嘴论坛总结">陆家嘴论坛总结</a>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="pixel-stars">
+            <div class="px-star s1"></div>
+            <div class="px-star s2"></div>
+            <div class="px-star s3"></div>
+            <div class="px-star s4"></div>
+            <div class="px-star s5"></div>
+            <div class="px-star s6"></div>
+            <div class="px-star s7"></div>
+            <div class="px-star s8"></div>
+            <div class="px-star s9"></div>
+            <div class="px-star s10"></div>
+        </div>
+        <div class="pixel-mountains">
+            <div class="px-mountain m1"></div>
+            <div class="px-mountain m2"></div>
+            <div class="px-mountain m3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title" id="heroTitle">LANREN.COM</h1>
+            <div class="scroll-down" id="scrollDown">▼</div>
+        </div>
+    </section>
+
+    <!-- 内容区 -->
+    <section class="main-content" id="main-content">
+        <div class="content-wrapper">
+            <main class="content-panel" id="content">
+                <div class="content-header-bar">
+                    <span class="content-tag" id="doc-category">HOME</span>
+                    <span class="content-sep">::</span>
+                    <span class="content-date" id="doc-date">2025</span>
+                </div>
+                <div class="content-body" id="content-area"></div>
+            </main>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
