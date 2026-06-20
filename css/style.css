@@ -69,6 +69,11 @@ body {
     text-shadow: 2px 2px 0 var(--pixel-text-light);
 }
 
+.nav-brand.active {
+    color: var(--pixel-accent);
+    text-shadow: 2px 2px 0 var(--pixel-text-light);
+}
+
 .nav-links {
     display: flex;
     gap: 4px;

@@ -52,9 +52,25 @@ async function loadManifest() {
     }
 }
 
-// 根据 manifest 动态渲染 HORROR 下拉菜单（桌面端 + 移动端）
+// 根据 manifest 动态渲染下拉菜单（桌面端 + 移动端）
 function renderDropdowns() {
     if (!contentManifest) return;
+
+    // 桌面端 BLOG
+    const blogDesktop = document.getElementById('blogDropdown');
+    if (blogDesktop && contentManifest.blog) {
+        blogDesktop.innerHTML = contentManifest.blog.map(item =>
+            `<a href="#content" class="dropdown-item" data-path="${item.path}">${item.title}</a>`
+        ).join('');
+    }
+
+    // 移动端 BLOG
+    const blogMobile = document.getElementById('mobileBlogDropdown');
+    if (blogMobile && contentManifest.blog) {
+        blogMobile.innerHTML = contentManifest.blog.map(item =>
+            `<a href="#content" class="mobile-dropdown-item" data-path="${item.path}">${item.title}</a>`
+        ).join('');
+    }
 
     // 桌面端 HORROR
     const horrorDesktop = document.getElementById('horrorDropdown');
@@ -249,7 +265,7 @@ function scrollToContent() {
 // 处理路由
 function handleRoute(path) {
     // 更新导航高亮
-    document.querySelectorAll('.nav-link, .dropdown-item, .mobile-link, .mobile-dropdown-item').forEach(link => {
+    document.querySelectorAll('.nav-brand, .nav-link, .dropdown-item, .mobile-link, .mobile-dropdown-item').forEach(link => {
         link.classList.remove('active');
         if (link.dataset.path === path) link.classList.add('active');
     });
@@ -346,6 +362,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('.nav-link[data-path], .dropdown-item[data-path], .mobile-link[data-path], .mobile-dropdown-item[data-path]').forEach(link => {
         link.addEventListener('click', handleNavClick);
     });
+
+    // 绑定品牌点击（LANREN.COM → HOME）
+    const navBrand = document.querySelector('.nav-brand');
+    if (navBrand) navBrand.addEventListener('click', handleNavClick);
 
     // 桌面端下拉：点击 trigger 也支持展开
     document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
